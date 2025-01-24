@@ -22,9 +22,10 @@ class Candidate(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(Text, index=True, nullable=False)
+    phone_number = Column(Text, nullable=False)
     email = Column(Text, unique=True, index=True, nullable=False)
     year_of_birth = Column(Integer, nullable=False)
-    CV_directory = Column(Text, nullable=False)
+    CV_directory = Column(Text)
     extract_objective = Column(Text)
     extract_experiences = Column(Text)
     extract_skills = Column(Text)

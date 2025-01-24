@@ -38,3 +38,7 @@ def display_startup_message():
         "########################################"
     )
     print(message)
+    
+    
+def format_candidate_name(candidate_name: str):
+    return "_".join(candidate_name.split())

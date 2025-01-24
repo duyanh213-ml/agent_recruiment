@@ -22,6 +22,13 @@ class Settings(BaseSettings):
 
     HR_ADMIN_USERNAME: str = os.getenv('HR_ADMIN_USERNAME', '')
     HR_ADMIN_PASSWORD: str = os.getenv('HR_ADMIN_PASSWORD', '')
+    
+    MINIO_ENDPOINT: str = os.getenv('MINIO_ENDPOINT')
+    MINIO_ACCESS_KEY: str = os.getenv('MINIO_ACCESS_KEY')
+    MINIO_SECRET_KEY: str = os.getenv('MINIO_SECRET_KEY')
+    MINIO_BUCKET_NAME: str = os.getenv('MINIO_BUCKET_NAME')
+    
+    TMP_CANDIDATE_FILE: str = os.getenv('TMP_CANDIDATE_FILE')
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):
@@ -29,3 +36,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+

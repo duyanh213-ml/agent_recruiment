@@ -49,7 +49,7 @@ def create_job(job_create: JobCreate, db: Session, current_user: Dict):
 
         return new_job
     except Exception as e:
-        raise Exception("Error occurred in create job:") from e
+        raise Exception("Error occurred in create job:", e)
 
 
 def apply_job_filters(query: Query, filter_job: FilterJobRequest):
