@@ -1,4 +1,4 @@
-from sqlalchemy import func, Column, Integer, Text, DateTime, Boolean, ForeignKey
+from sqlalchemy import func, Column, Integer, Text, DateTime, Boolean, ForeignKey, Float
 from app.db.session import Base
 
 
@@ -13,6 +13,7 @@ class Job(Base):
     benefits = Column(Text, nullable=False)
     work_schedule = Column(Text, nullable=False)
     location = Column(Text, nullable=False)
+    is_open = Column(Boolean, nullable=False)
     created_date = Column(DateTime, nullable=False, default=func.now())
     updated_date = Column(DateTime, nullable=False, default=func.now())
 
@@ -23,28 +24,18 @@ class Candidate(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(Text, index=True, nullable=False)
     phone_number = Column(Text, nullable=False)
-    email = Column(Text, unique=True, index=True, nullable=False)
+    email = Column(Text, index=True, nullable=False)
     year_of_birth = Column(Integer, nullable=False)
+    job_id = Column(Integer, ForeignKey(
+        "jobs.id", ondelete="SET NULL"))
+    job_type = Column(Text, nullable=False)
     CV_directory = Column(Text)
     extract_objective = Column(Text)
     extract_experiences = Column(Text)
     extract_skills = Column(Text)
     extract_education = Column(Text)
     extract_certificate = Column(Text)
-    created_date = Column(DateTime, nullable=False, default=func.now())
-    updated_date = Column(DateTime, nullable=False, default=func.now())
-
-
-class Job_Candidate(Base):
-    __tablename__ = "job_candidate"
-
-    id = Column(Integer, primary_key=True, index=True)
-    job_id = Column(Integer, ForeignKey(
-        "jobs.id", ondelete="CASCADE"), index=True, nullable=False)
-    candidate_id = Column(
-        Integer, ForeignKey("candidates.id", ondelete="CASCADE"), index=True, nullable=False
-    )
-    score = Column(Integer, index=True)
+    score = Column(Float)
     summary_reason = Column(Text)
     created_date = Column(DateTime, nullable=False, default=func.now())
     updated_date = Column(DateTime, nullable=False, default=func.now())

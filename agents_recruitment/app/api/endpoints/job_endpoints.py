@@ -21,7 +21,7 @@ from app.core.security import (
 job_router = APIRouter()
 
 
-@job_router.post("/create_job", response_model=JobCreate, status_code=201)
+@job_router.post("/create_job", response_model=JobResponse, status_code=201)
 async def create_job_api(new_job: JobCreate, db: Session = Depends(get_db),
                          current_user: Dict = Depends(get_current_user)):
     if not is_user_active(current_user, db):

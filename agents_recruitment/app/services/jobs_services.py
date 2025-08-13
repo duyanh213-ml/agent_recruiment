@@ -1,4 +1,5 @@
-from datetime import datetime
+import datetime
+
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy import desc, func, select
@@ -25,8 +26,9 @@ def create_job(job_create: JobCreate, db: Session, current_user: Dict):
             benefits=job_create.benefits,
             work_schedule=job_create.work_schedule,
             location=job_create.location,
-            created_date=job_create.created_date,
-            updated_date=job_create.updated_date
+            is_open=settings.default_is_open_job,
+            created_date=datetime.datetime.now(datetime.timezone.utc),
+            updated_date=datetime.datetime.now(datetime.timezone.utc)
         )
         db.add(new_job)
         db.flush()  # Ensures `new_job.id` is available before the next query
@@ -41,15 +43,15 @@ def create_job(job_create: JobCreate, db: Session, current_user: Dict):
         new_permission = Permission(
             job_id=new_job.id,
             user_id=user_id,
-            created_date=job_create.created_date,
-            updated_date=job_create.updated_date
+            created_date=datetime.datetime.now(datetime.timezone.utc),
+            updated_date=datetime.datetime.now(datetime.timezone.utc)
         )
         db.add(new_permission)
         db.commit()
 
         return new_job
     except Exception as e:
-        raise Exception("Error occurred in create job:", e)
+        raise Exception("Error occurred in create job", e)
 
 
 def apply_job_filters(query: Query, filter_job: FilterJobRequest):
@@ -62,6 +64,8 @@ def apply_job_filters(query: Query, filter_job: FilterJobRequest):
     if filter_job.location is not None:
         query = query.filter(Job.location.ilike(
             f"%{filter_job.location}%"))
+    if filter_job.is_open is not None:
+        query = query.filter(Job.is_open == filter_job.is_open)
     return query
 
 
@@ -75,7 +79,7 @@ def get_all_job(filter_job: FilterJobRequest, pagination_base: PaginationBase, d
         return result
 
     except Exception as e:
-        raise Exception("Error occured in get all job:", e)
+        raise Exception("Error occured in get all job", e)
 
 
 def get_all_job_not_in_permission(filter_job: FilterJobRequest, pagination_base: PaginationBase, db: Session):
@@ -100,7 +104,7 @@ def get_job_by_id(job_id: int, db: Session):
             return JSONResponse(status_code=400, content="Job not found")
         return job
     except Exception as e:
-        raise Exception("Error occured in get job by id:", e)
+        raise Exception("Error occured in get job by id", e)
 
 
 def assign_permission(user_id: int, job_id: int, db: Session):
@@ -116,8 +120,8 @@ def assign_permission(user_id: int, job_id: int, db: Session):
         new_permission = Permission(
             job_id=job_id,
             user_id=user_id,
-            created_date=datetime.now(),
-            updated_date=datetime.now()
+            created_date=datetime.datetime.now(datetime.timezone.utc),
+            updated_date=datetime.datetime.now(datetime.timezone.utc)
         )
      
         db.add(new_permission)
@@ -157,16 +161,19 @@ def update_job_by_id(job_update: JobUpdate, db: Session):
         if job_update.location is not None:
             is_updated = True
             job.location = job_update.location
+        if job_update.is_open is not None:
+            is_updated = True
+            job.is_open = job_update.is_open
 
         if is_updated:
-            job.updated_date = func.now()
+            job.updated_date = datetime.datetime.now(datetime.timezone.utc)
 
         db.flush()
         db.commit()
 
         return job
     except Exception as e:
-        raise Exception("Error occured in update job by id:", e)
+        raise Exception("Error occured in update job by id", e)
 
 
 def delete_job_by_id(job_id: int, db: Session):
@@ -183,6 +190,7 @@ def delete_job_by_id(job_id: int, db: Session):
             benefits=job.benefits,
             work_schedule=job.work_schedule,
             location=job.location,
+            is_open=job.is_open,
             created_date=job.created_date,
             updated_date=job.updated_date
         )
@@ -190,4 +198,4 @@ def delete_job_by_id(job_id: int, db: Session):
         db.commit()
         return job_response
     except Exception as e:
-        raise Exception("Error occured in delete job by id:", e)
+        raise Exception("Error occured in delete job by id", e)

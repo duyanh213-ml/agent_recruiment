@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     default_admin_role: str = "HR_admin"
     default_hr_active: bool = False
     default_admin_active: bool = True
+    default_is_open_job: bool = True
 
     DATABASE_NAME: str = os.getenv('POSTGRES_DB', "recruitment")
     DATABASE_USER: str = os.getenv('POSTGRES_USER', "postgres")

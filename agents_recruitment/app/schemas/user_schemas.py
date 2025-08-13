@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from datetime import datetime
+
+from pydantic import BaseModel
 
 
 class UserBase(BaseModel):
@@ -8,8 +9,8 @@ class UserBase(BaseModel):
     hash_password: str
     role: str
     is_active: bool
-    created_date: datetime = datetime.now()
-    updated_date: datetime = datetime.now()
+    created_date: datetime
+    updated_date: datetime
 
 
 class UserCreate(BaseModel):
@@ -21,6 +22,7 @@ class UserCreate(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    role: str
 
 
 class UserResponse(UserBase):

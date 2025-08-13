@@ -1,0 +1,11 @@
+services:
+  fastapi:
+    build: .
+    container_name: agents_recruitment_management
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app 
+    command: uvicorn src.app.api.main:app --host 0.0.0.0 --port 8000 --reload

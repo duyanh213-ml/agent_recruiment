@@ -1,9 +1,10 @@
+import datetime
+
 from typing import Dict
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, Depends
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
-from datetime import datetime
 
 from app.core.config import settings
 from app.db.models import User
@@ -29,8 +30,8 @@ def register_user(user: UserCreate, db: Session):
             hash_password=get_hash_password(user.password),
             role=settings.default_HR_role,
             is_active=settings.default_hr_active,
-            created_date=datetime.now(),
-            updated_date=datetime.now()
+            created_date=datetime.datetime.now(datetime.timezone.utc),
+            updated_date=datetime.datetime.now(datetime.timezone.utc)
         )
         db.add(new_user)
         db.flush()
@@ -53,8 +54,10 @@ def login(db: Session, form_data: OAuth2PasswordRequestForm = Depends(), token_t
                 status_code=401, content="Incorrect username or password")
         return Token(
             access_token=create_access_token({"sub": form_data.username}),
-            token_type=token_type
+            token_type=token_type,
+            role=user.role
         )
+        
     except Exception as e:
         raise Exception("Error occurred in login", e)
 
@@ -97,7 +100,7 @@ def change_password(username: str, change_password_request: ChangePasswordReques
                 status_code=401, content="Incorrect password")
         user.hash_password = get_hash_password(
             change_password_request.new_password)
-        user.updated_date = datetime.now()
+        user.updated_date = datetime.datetime.now(datetime.timezone.utc)
         db.flush()
         db.commit()
         return user
@@ -127,4 +130,4 @@ def delete_user_by_id(user_id: int, db: Session):
         db.commit()
         return user_response
     except Exception as e:
-        raise Exception("Error occured in delete user by id:", e)
+        raise Exception("Error occured in delete user by id", e)

@@ -37,7 +37,7 @@ def display_startup_message():
         "#                                      #\n"
         "########################################"
     )
-    print(message)
+    print(f"[INFO]\n{message}")
     
     
 def format_candidate_name(candidate_name: str):

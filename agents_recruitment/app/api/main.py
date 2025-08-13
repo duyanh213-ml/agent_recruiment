@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.api.endpoints.job_endpoints import job_router
@@ -23,6 +24,14 @@ Base.metadata.create_all(bind=engine)
 app.include_router(job_router, prefix="/job", tags=["job"])
 app.include_router(user_router, prefix="/user", tags=["user"])
 app.include_router(candidate_route, prefix="/candidate", tags=["candidate"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins (use specific domains in production)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 
 @app.get("/health")

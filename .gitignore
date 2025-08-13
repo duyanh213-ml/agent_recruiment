@@ -15,3 +15,10 @@ wheels/
 #logs
 logs/*
 !logs
+
+#tmp_candidate
+tmp_candidate.pdf
+hehe.pdf
+
+# data
+data/

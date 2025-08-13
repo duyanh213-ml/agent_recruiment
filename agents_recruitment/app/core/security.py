@@ -1,3 +1,6 @@
+import os
+
+from dotenv import load_dotenv
 from passlib.context import CryptContext
 from typing import Dict, List
 from fastapi import Depends, HTTPException, status
@@ -8,8 +11,10 @@ from sqlalchemy.orm import Session
 
 from app.db.models import Permission, User
 
+load_dotenv()
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 10
-SECRET_KEY = "b7fa8e401bd34ddfbdd975a875759590f7ba56ecf5b2c557ed9c8be135687cf4"
+SECRET_KEY = os.getenv("SECRET_KEY", "")
 ALGORITHM = "HS256"
 
 # Password hashing context
@@ -82,4 +87,3 @@ def is_user_active(username: Dict, db: Session):
         return bool(is_active)
     except Exception as e:
         raise Exception("Error occured in is user active")
-        

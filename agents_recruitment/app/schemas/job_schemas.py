@@ -11,8 +11,9 @@ class JobBase(BaseModel):
     benefits: str
     work_schedule: str
     location: str
-    created_date: datetime = datetime.now()
-    updated_date: datetime = datetime.now()
+    is_open: bool
+    created_date: datetime
+    updated_date: datetime
 
 
 class JobCreate(JobBase):
@@ -45,6 +46,7 @@ class JobUpdate(BaseModel):
     benefits: Optional[str] = None
     work_schedule: Optional[str] = None
     location: Optional[str] = None
+    is_open: Optional[bool] = None
 
 
 class PermissionResponse(BaseModel):
@@ -59,3 +61,4 @@ class FilterJobRequest(BaseModel):
     title: Optional[str] = None
     job_type: Optional[str] = None
     location: Optional[str] = None
+    is_open: Optional[bool] = None
